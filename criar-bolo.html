@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte seu Bolo - Loja de Bolos</title>
+    <style>
+        :root {
+            --primary: #ff85a2;
+            --secondary: #fce4ec;
+            --accent: #ff4081;
+            --dark: #333;
+            --white: #ffffff;
+            --success: #25d366;
+        }
+
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: #fdf2f5; 
+            margin: 0; 
+            padding: 15px; 
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 133, 162, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--accent); margin-bottom: 5px; }
+        p { color: #777; margin-top: 0; }
+
+        .section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--secondary);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--dark);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            background-color: #fff;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+        }
+
+        .price-tag {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .summary-box {
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .btn-whatsapp {
+            background: var(--success);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-whatsapp:hover { transform: scale(1.02); }
+        .btn-whatsapp:active { transform: scale(0.98); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Controle de visibilidade dos tamanhos */
+        #secaoTamanho1, #secaoTamanho2 {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🎂 Monte seu Bolo</h1>
+            <p>Escolha cada detalhe do seu jeito!</p>
+        </header>
+
+        <form id="cakeForm">
+            
+            <div class="section">
+                <div class="section-title">Escolha a Massa*</div>
+                <select id="massa" required onchange="calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="Baunilha" data-price="10">Baunilha (+ R$ 10,00)</option>
+                    <option value="Chocolate" data-price="15">Chocolate (+ R$ 15,00)</option>
+                    <option value="Red Velvet" data-price="25">Red Velvet (+ R$ 25,00)</option>
+                    <option value="Cenoura" data-price="12">Cenoura (+ R$ 12,00)</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Quantidade de Andares*</div>
+                <select id="andares" required onchange="alternarAndares(); calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="1" data-price="0">1 Andar (Padrão)</option>
+                    <option value="2" data-price="0">2 Andares</option>
+                </select>
+            </div>
+
+            <div class="section" id="secaoTamanho1">
+                <div class="section-title">Tamanho e Peso (1 Andar)*</div>
+                <select id="tamanho1" onchange="calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="Pequeno (1kg)" data-price="50">Pequeno (1kg) - R$ 50,00</option>
+                    <option value="Médio (2kg)" data-price="90">Médio (2kg) - R$ 90,00</option>
+                    <option value="Grande (3kg)" data-price="130">Grande (3kg) - R$ 130,00</option>
+                    <option value="Festa (5kg)" data-price="210">Festa (5kg) - R$ 210,00</option>
+                </select>
+            </div>
+
+            <div class="section" id="secaoTamanho2">
+                <div class="section-title">Tamanho e Peso (2 Andares)*</div>
+                <select id="tamanho2" onchange="calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="Base: 2kg + Topo: 1,6kg" data-price="169">Base: 2kg + Topo: 1,6kg - R$ 169,00</option>
+                    <option value="Base: 3kg + Topo: 2kg" data-price="199">Base: 3kg + Topo: 2kg - R$ 199,00</option>
+                    <option value="Base: 4kg + Topo: 2kg" data-price="240">Base: 4kg + Topo: 2kg - R$ 240,00</option>
+                    <option value="Base: 4kg + Topo: 3kg" data-price="280">Base: 4kg + Topo: 3kg - R$ 280,00</option>
+                    <option value="Base: 5kg + Topo: 3kg" data-price="320">Base: 5kg + Topo: 3kg - R$ 320,00</option>
+                    <option value="Base: 6kg + Topo: 4kg" data-price="410">Base: 6kg + Topo: 4kg - R$ 410,00</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Recheio 1 (Obrigatório)*</div>
+                <select id="recheio1" required onchange="calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="Brigadeiro" data-price="15">Brigadeiro (+ R$ 15,00)</option>
+                    <option value="Ninho com Morango" data-price="20">Ninho com Morango (+ R$ 20,00)</option>
+                    <option value="Doce de Leite" data-price="12">Doce de Leite (+ R$ 12,00)</option>
+                    <option value="Nutella" data-price="25">Nutella (+ R$ 25,00)</option>
+                    <option value="Beijinho" data-price="10">Beijinho (+ R$ 10,00)</option>
+                </select>
+
+                <div class="section-title" style="margin-top:15px">Recheio 2 (Opcional)</div>
+                <select id="recheio2" onchange="calcularTotal()">
+                    <option value="Nenhum" data-price="0">Nenhum</option>
+                    <option value="Brigadeiro" data-price="15">Brigadeiro (+ R$ 15,00)</option>
+                    <option value="Ninho com Morango" data-price="20">Ninho com Morango (+ R$ 20,00)</option>
+                    <option value="Doce de Leite" data-price="12">Doce de Leite (+ R$ 12,00)</option>
+                    <option value="Nutella" data-price="25">Nutella (+ R$ 25,00)</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Cobertura*</div>
+                <select id="cobertura" required onchange="calcularTotal()">
+                    <option value="" data-price="0">Selecione...</option>
+                    <option value="Chantininho" data-price="15">Chantininho (+ R$ 15,00)</option>
+                    <option value="Ganache de Chocolate" data-price="25">Ganache de Chocolate (+ R$ 25,00)</option>
+                    <option value="Pasta Americana" data-price="35">Pasta Americana (+ R$ 35,00)</option>
+                    <option value="Glace" data-price="10">Glace (+ R$ 10,00)</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Topo de Bolo*</div>
+                <select id="topo" required onchange="calcularTotal()">
+                    <option value="Sem Topo" data-price="0">Sem Topo (R$ 0,00)</option>
+                    <option value="Parabéns Simples" data-price="10">Parabéns Simples (+ R$ 10,00)</option>
+                    <option value="Tema Personalizado" data-price="25">Tema Personalizado (+ R$ 25,00)</option>
+                    <option value="Flores Naturais" data-price="30">Flores Naturais (+ R$ 30,00)</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Data para Entrega*</div>
+                <input type="date" id="dataEntrega" required>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Observações (Cores, nome, etc)</div>
+                <textarea id="obs" rows="3" placeholder="Ex: Escrever 'Parabéns Maria', usar tons de rosa..."></textarea>
+            </div>
+
+            <div class="summary-box">
+                <div class="total-row">
+                    <span>Total Estimado:</span>
+                    <span id="totalDisplay">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-whatsapp" onclick="enviarPedido()">
+                📱 Enviar Pedido para o WhatsApp
+            </button>
+        </form>
+
+        <a href="index.html" class="back-link">← Voltar para a Loja</a>
+    </div>
+
+    <script>
+        // Função para mostrar o seletor de tamanho correto
+        function alternarAndares() {
+            const andares = document.getElementById('andares').value;
+            const secao1 = document.getElementById('secaoTamanho1');
+            const secao2 = document.getElementById('secaoTamanho2');
+            const tam1 = document.getElementById('tamanho1');
+            const tam2 = document.getElementById('tamanho2');
+
+            if (andares === "1") {
+                secao1.style.display = 'block';
+                secao2.style.display = 'none';
+                tam1.required = true;
+                tam2.required = false;
+                tam2.value = ""; // Limpa a escolha do outro seletor
+            } else if (andares === "2") {
+                secao1.style.display = 'none';
+                secao2.style.display = 'block';
+                tam1.required = false;
+                tam2.required = true;
+                tam1.value = ""; // Limpa a escolha do outro seletor
+            } else {
+                secao1.style.display = 'none';
+                secao2.style.display = 'none';
+            }
+        }
+
+        // Função para calcular o valor total
+        function calcularTotal() {
+            const selects = document.querySelectorAll('select');
+            let total = 0;
+
+            selects.forEach(select => {
+                const selectedOption = select.options[select.selectedIndex];
+                const price = parseFloat(selectedOption.getAttribute('data-price') || 0);
+                total += price;
+            });
+
+            document.getElementById('totalDisplay').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            return total;
+        }
+
+        // Função para formatar e enviar o pedido
+        function enviarPedido() {
+            const form = document.getElementById('cakeForm');
+            if (!form.checkValidity()) {
+                alert("Por favor, preencha todos os campos obrigatórios (*) antes de enviar.");
+                return;
+            }
+
+            const total = document.getElementById('totalDisplay').innerText;
+            const massa = document.getElementById('massa').value;
+            const andares = document.getElementById('andares').value;
+            
+            // Pega o tamanho de acordo com o andar escolhido
+            const tamanho = andares === "1" ? document.getElementById('tamanho1').value : document.getElementById('tamanho2').value;
+            
+            const recheio1 = document.getElementById('recheio1').value;
+            const recheio2 = document.getElementById('recheio2').value;
+            const cobertura = document.getElementById('cobertura').value;
+            const topo = document.getElementById('topo').value;
+            const data = document.getElementById('dataEntrega').value;
+            const obs = document.getElementById('obs').value || "Nenhuma";
+
+            const texto = `*NOVO PEDIDO DE BOLO PERSONALIZADO* 🎂%0A%0A` +
+                          `*Massa:* ${massa}%0A` +
+                          `*Andares:* ${andares}%0A` +
+                          `*Tamanho/Peso:* ${tamanho}%0A` +
+                          `*Recheio 1:* ${recheio1}%0A` +
+                          `*Recheio 2:* ${recheio2}%0A` +
+                          `*Cobertura:* ${cobertura}%0A` +
+                          `*Topo:* ${topo}%0A` +
+                          `*Data de Entrega:* ${data}%0A` +
+                          `*Obs:* ${obs}%0A%0A` +
+                          `*VALOR TOTAL:* ${total}`;
+
+            const numeroWhatsapp = "5500999999999"; 
+            window.open(`https://wa.me/${numeroWhatsapp}?text=${texto}`, '_blank');
+        }
+
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('dataEntrega').setAttribute('min', hoje);
+    </script>
+</body>
+</html>
