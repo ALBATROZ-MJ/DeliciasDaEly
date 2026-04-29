@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -456,7 +457,7 @@
         .input-cliente {
             width: 100%;
             padding: 15px;
-            margin: 20px 0;
+            margin: 10px 0;
             border: 2px solid #eee;
             border-radius: 10px;
             font-size: 16px;
@@ -484,10 +485,7 @@
     </div>
 
     <div class="info-cards">
-        <a href="criar-bolo.html" style="text-decoration: none;">
-    <button class="btn-criar-bolo">🎂 Criar meu Bolo 🎂</button>
-        </a>
-
+        <button class="btn-criar-bolo">🎂 Criar meu Bolo 🎂</button>
         <div class="info-card info-orange">Aproveite nossa promoção com preços imperdíveis de Hoje!</div>
     </div>
 
@@ -505,7 +503,7 @@
     </div>
 
     <hr class="linha-rosa-2">
-    <div class="section-name" style="text-align: center; color: var(--accent); font-size: 25px;">Demostrações de Bolos<br>⬇💗⬇</div>
+    <div class="section-name" style="text-align: center; color: var(--accent); font-size: 25px;">Bolos<br>⬇💗⬇</div>
     
     <div class="carousel-container" id="carrossel-bolos">
         </div>
@@ -524,20 +522,25 @@
     </div>
     
     <hr class="linha-rosa-2" style="margin-top: 20px;">
-    <div class="section-name" style="text-align: center; color: var(--accent); font-size: 25px;">À pronta entrega<br>⬇💗⬇</div>
+    <div class="section-name" style="text-align: center; color: var(--accent); font-size: 25px;">Apronta Entrega<br>⬇💗⬇</div>
     
     <div class="carousel-container" id="carrossel-entrega">
         </div>
 
     <div id="finalizarModal">
-        <h2 style="color: var(--rodape); margin-bottom: 20px;">Finalizar Pedido</h2>
-        <p>Para entregar seus bolos, precisamos da sua localização:</p>
-        <button id="btnLoc" class="btn-add" onclick="pegarLocalizacao()" style="background: var(--gold);">Confirmar Localização Exata</button>
-        <div id="areaNome" style="display:none; margin-top: 30px;">
-            <p>Quem irá receber o pedido?</p>
-            <input type="text" id="nomeCliente" class="input-cliente" placeholder="Digite seu nome (Obrigatório)" required>
-            <button class="btn-add" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+        <h2 style="color: var(--rodape); margin-bottom: 20px;">Retirada no Local</h2>
+        <p>Preencha os dados de quem irá retirar o produto:</p>
+        
+        <div id="areaDadosRetirada" style="margin-top: 20px;">
+            <p style="text-align: left; font-weight: bold; margin-left: 5px;">Nome Completo:</p>
+            <input type="text" id="nomeCliente" class="input-cliente" placeholder="Nome de quem vai retirar" required>
+            
+            <p style="text-align: left; font-weight: bold; margin-left: 5px; margin-top: 10px;">CPF ou Celular:</p>
+            <input type="text" id="docCliente" class="input-cliente" placeholder="Digite o CPF ou Celular" required>
+            
+            <button class="btn-add" onclick="enviarPedidoWhatsApp()" style="margin-top: 20px;">Finalizar e Enviar via WhatsApp</button>
         </div>
+        
         <button class="close-modal" onclick="fecharFinalizar()" style="margin-top: 40px; background: none; border: none; text-decoration: underline;">Voltar ao carrinho</button>
     </div>
 
@@ -588,7 +591,7 @@
                             div.innerHTML = `
                                 <img class="combo-img prod-img" src="" alt="Combo">
                                 <div class="combo-title prod-nome">...</div>
-                                <div class="frete-label">🎂</div>
+                                <div class="frete-label">Frete Grátis</div>
                                 <div class="price-old prod-preco-velho" style="display:none;"></div>
                                 <div class="price-new prod-preco-novo">...</div>
                                 <div class="urgent">🔥 Apenas 1 unidade(s) com esse preço especial</div>
@@ -687,7 +690,6 @@
         }
 
         let cart = [];
-        let userLocation = "";
 
         function addToCartByElement(id, event) {
             const el = document.getElementById(id);
@@ -771,28 +773,15 @@
         }
         function fecharFinalizar() { document.getElementById('finalizarModal').style.display = 'none'; }
 
-        function pegarLocalizacao() {
-            const btn = document.getElementById('btnLoc');
-            btn.innerText = "Buscando localização...";
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    userLocation = `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`;
-                    btn.innerText = "Tudo Ok";
-                    btn.style.background = "var(--verde)";
-                    document.getElementById('areaNome').style.display = "block";
-                }, () => {
-                    alert("Ative a localização para continuar.");
-                    btn.innerText = "Confirmar Localização Exata";
-                });
-            }
-        }
-
         function enviarPedidoWhatsApp() {
             const nome = document.getElementById('nomeCliente').value;
-            if(!nome) return alert("Por favor, digite seu nome.");
-            let mensagem = `*Novo Pedido - Delícias da Ely*%0A%0A`;
-            mensagem += `*Cliente:* ${nome}%0A`;
-            mensagem += `*Localização:* ${userLocation}%0A%0A`;
+            const doc = document.getElementById('docCliente').value;
+            
+            if(!nome || !doc) return alert("Por favor, preencha todos os campos obrigatórios.");
+            
+            let mensagem = `*Pedido para Retirada - Delícias da Ely*%0A%0A`;
+            mensagem += `*Quem retira:* ${nome}%0A`;
+            mensagem += `*CPF/Celular:* ${doc}%0A%0A`;
             mensagem += `*Itens:*%0A`;
             let total = 0;
             cart.forEach(item => {
@@ -800,7 +789,7 @@
                 total += item.price * item.qty;
             });
             mensagem += `%0A*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
-            window.open(`https://wa.me/5562982212325?text=${mensagem}`, '_blank');
+            window.open(`https://wa.me/5562995679219?text=${mensagem}`, '_blank');
         }
 
         fetchSheetData();
